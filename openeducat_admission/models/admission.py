@@ -24,6 +24,9 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class OpAdmission(models.Model):
@@ -209,9 +212,34 @@ class OpAdmission(models.Model):
             start_date = fields.Date.from_string(rec.register_id.start_date)
             end_date = fields.Date.from_string(rec.register_id.end_date)
             application_date = fields.Date.from_string(rec.application_date)
-            if application_date < start_date or application_date > end_date:
-                raise ValidationError(_(
-                    "Application Date should be between Start Date & End Date of Admission Register."))
+
+            _logger.info(
+                "Admission validation - rec.id=%s, register_id=%s, "
+                "start_date=%s (raw=%s), end_date=%s (raw=%s), application_date=%s (raw=%s); "
+                "types: start=%s, end=%s, app=%s",
+                rec.id,
+                rec.register_id.id if rec.register_id else None,
+                start_date,
+                rec.register_id.start_date if rec.register_id else None,
+                end_date,
+                rec.register_id.end_date if rec.register_id else None,
+                application_date,
+                rec.application_date,
+                type(start_date).__name__,
+                type(end_date).__name__,
+                type(application_date).__name__,
+            )
+            try:
+                if application_date < start_date or application_date > end_date:
+                    raise ValidationError(_(
+                        "Application Date should be between Start Date & End Date of Admission Register."))
+            except Exception:
+                _logger.exception(
+                    "Admission date comparison failed for rec.id=%s with values: "
+                    "application_date=%s, start_date=%s, end_date=%s",
+                    rec.id, application_date, start_date, end_date
+                )
+                raise
 
     @api.constrains('birth_date')
     def _check_birthdate(self):
