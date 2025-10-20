@@ -1,0 +1,39 @@
+services:
+  db_openeducat:
+    image: postgres:15
+    container_name: odoo_db_openeducat
+    environment:
+      - POSTGRES_DB=openeducat
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - PGPORT=5431
+    volumes:
+      - odoo-db-data-openeducat:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5431:5431"
+    restart: unless-stopped
+
+  odoo_openeducat:
+    image: odoo:18.0
+    container_name: odoo_app_openeducat
+    depends_on:
+      - db_openeducat
+    ports:
+      - "8069:8069"
+      - "8072:8072"  # longpolling port
+    environment:
+      - HOST=db_openeducat
+      - USER=odoo
+      - PASSWORD=odoo
+      - POSTGRES_DB=openeducat
+    volumes:
+      - odoo-web-data-openeducat:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - .:/mnt/extra-addons:ro
+    restart: unless-stopped
+    command: -- --dev=reload,qweb,werkzeug,xml
+
+volumes:
+  odoo-web-data-openeducat:
+  odoo-db-data-openeducat: 
