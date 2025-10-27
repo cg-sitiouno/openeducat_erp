@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
+
         <record id="view_op_exam_tree" model="ir.ui.view">
             <field name="name">op.exam.list</field>
             <field name="model">op.exam</field>
@@ -35,8 +35,7 @@
                         <button name="act_done" invisible="state != 'result_updated'" type="object" string="Done"
                                 class="oe_highlight"/>
                         <button name="act_draft" invisible="state != 'cancel'" type="object" string="Draft" class="oe_highlight"/>
-                        <button string="Result Updated" class="oe_highlight" invisible="state != 'held'" type="object"
-                                name="act_result_updated"/>
+                        <button string="Result Updated" class="oe_highlight" invisible="state != 'held' or not results_entered" type="object" name="act_result_updated"/>
                         <button name="act_cancel" invisible="state not in ['draft', 'held', 'schedule']" type="object" string="Cancel"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,held,scheduled,result_updated,done"/>
@@ -156,5 +155,5 @@
             <field name="view_mode">list</field>
             <field name="view_id" ref="view_op_exam_tree"/>
         </record>
-    </data>
+
 </odoo>

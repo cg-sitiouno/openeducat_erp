@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -19,7 +18,7 @@
 #
 ###############################################################################
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -56,6 +55,8 @@ class OpResultLine(models.Model):
                         if grade.min_per <= record.marks and \
                                 grade.max_per >= record.marks:
                             record.grade = grade.result
+                        else:
+                            record.grade = None
                 else:
                     record.grade = None
             else:

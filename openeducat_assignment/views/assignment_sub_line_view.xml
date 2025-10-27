@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
         <record id="view_op_assignment_sub_line_tree" model="ir.ui.view">
             <field name="name">op.assignment.sub.line.list</field>
             <field name="model">op.assignment.sub.line</field>
@@ -65,7 +64,7 @@
                             <group>
                                 <field name="student_id"/>
                                 <field name="assignment_id" domain="[('allocation_ids','=',student_id),('state','=','publish')]" />
-                                <field name="marks" readonly="state == 'accept'" invisible="state != 'accept' or user_boolean == False" />
+                                <field name="marks" readonly="state == 'accept'" />
                             </group>
                             <group>
                                 <field name="submission_date" />
@@ -172,5 +171,4 @@
             <field name="view_id" ref="view_op_assignment_sub_line_pivot" />
         </record>
 
-    </data>
 </odoo>

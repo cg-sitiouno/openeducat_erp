@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -19,7 +18,7 @@
 #
 ###############################################################################
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -50,10 +49,9 @@ class OpResultTemplate(models.Model):
     @api.constrains('exam_session_id')
     def _check_exam_session(self):
         for record in self:
-            for exam in record.exam_session_id.exam_ids:
-                if exam.state != 'done':
-                    raise ValidationError(
-                        _('All subject exam should be done.'))
+            if record.exam_session_id.state != 'done':
+                raise ValidationError(
+                    _('Exam Session state must be Done.'))
 
     @api.constrains('grade_ids')
     def _check_min_max_per(self):

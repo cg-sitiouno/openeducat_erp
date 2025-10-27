@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -19,7 +18,7 @@
 #
 ###############################################################################
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -63,7 +62,9 @@ class OpAssignment(models.Model):
     active = fields.Boolean(default=True)
     grading_assignment_id = fields.Many2one('grading.assignment', 'Grading Assignment',
                                             required=True, ondelete="cascade")
-    assignment_sub_line_count = fields.Integer('Submissions',compute="assignment_count_compute")
+    assignment_sub_line_count = fields.Integer(
+        'Submissions', compute="_compute_assignment_count_compute")
+    courses_subjects = fields.Many2many('op.subject')
 
     @api.constrains('issued_date', 'submission_date')
     def check_dates(self):
@@ -74,7 +75,7 @@ class OpAssignment(models.Model):
                 raise ValidationError(_(
                     "Submission Date cannot be set before Issue Date."))
 
-    def assignment_count_compute(self):
+    def _compute_assignment_count_compute(self):
         self.assignment_sub_line_count = len(self.assignment_sub_line)
 
     @api.onchange('course_id')
@@ -84,6 +85,12 @@ class OpAssignment(models.Model):
             subject_ids = self.env['op.course'].search([
                 ('id', '=', self.course_id.id)]).subject_ids
             return {'domain': {'subject_id': [('id', 'in', subject_ids.ids)]}}
+
+    @api.onchange('course_id')
+    def onchange_subjects(self):
+        for rec in self:
+            if rec.course_id:
+                rec.courses_subjects = rec.course_id.subject_ids
 
     def act_publish(self):
         result = self.state = 'publish'
@@ -105,6 +112,6 @@ class OpAssignment(models.Model):
             'type': 'ir.actions.act_window',
             'view_mode': 'list,form',
             'res_model': 'op.assignment.sub.line',
-        'domain': [('id', 'in', self.assignment_sub_line.ids)],
+            'domain': [('id', 'in', self.assignment_sub_line.ids)],
             'target': 'current',
         }

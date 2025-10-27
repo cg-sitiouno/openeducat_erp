@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -97,8 +96,8 @@ class ResConfigSettings(models.TransientModel):
         string="LMS Survey Enterprise")
     module_openeducat_meeting_enterprise = fields.Boolean(
         string="Meeting Enterprise")
-    module_openeducat_online_admission = fields.Boolean(
-        string="Online Admission Enterprise")
+    module_openeducat_dynamic_admission = fields.Boolean(
+        string="Dynamic Admission")
     module_openeducat_parent_enterprise = fields.Boolean(
         string="Parent Enterprise")
     module_openeducat_placement_enterprise = fields.Boolean(
@@ -115,16 +114,10 @@ class ResConfigSettings(models.TransientModel):
         string="Lesson Enterprise")
     module_openeducat_skill_enterprise = fields.Boolean(
         string="Skill Enterprise")
-    module_openeducat_lms_website = fields.Boolean(
-        string="LMS Website")
     module_openeducat_assignment_grading_enterprise = fields.Boolean(
         string="Assignment Grading Enterprise")
     module_openeducat_assignment_grading_bridge = fields.Boolean(
-        string="Assignment Grading Bridge")
-    module_openeducat_fees_on_session = fields.Boolean(
-        string="Fees On Session")
-    module_openeducat_fees_on_duration = fields.Boolean(
-        string="Fees On Duration")
+        string="Assignment Gradebook Bridge")
     module_openeducat_lms_admission = fields.Boolean(
         string="LMS Admission")
     module_backend_theme = fields.Boolean(
@@ -179,32 +172,6 @@ class ResConfigSettings(models.TransientModel):
         string="Attendance Xlsx Report")
     module_openeducat_asset_request_enterprise = fields.Boolean(
         string="Asset Request Enterprise")
-    module_openeducat_lms_interactive_video = fields.Boolean(
-        string="Lms Interactive Video")
-    module_openeducat_lms_drag_into_text = fields.Boolean(
-        string="Lms Drag Into Text")
-    module_openeducat_lms_match_following = fields.Boolean(
-        string="Lms Match Following")
-    module_openeducat_lms_match_images = fields.Boolean(
-        string="Lms Match Images")
-    module_openeducat_lms_multiple_choice = fields.Boolean(
-        string="Lms Multiple Choice")
-    module_openeducat_lms_numeric = fields.Boolean(
-        string="Lms Numeric")
-    module_openeducat_lms_sort_paragraphs = fields.Boolean(
-        string="Lms Sort Paragraphs")
-    module_openeducat_quiz_drag_into_text = fields.Boolean(
-        string="Quiz Drag Into Text")
-    module_openeducat_quiz_match_following = fields.Boolean(
-        string="Quiz Match Following")
-    module_openeducat_quiz_match_images = fields.Boolean(
-        string="Quiz Match Images")
-    module_openeducat_quiz_multiple_choice = fields.Boolean(
-        string="Quiz Multiple Choice")
-    module_openeducat_quiz_numeric = fields.Boolean(
-        string="Quiz Numeric")
-    module_openeducat_quiz_sort_paragraphs = fields.Boolean(
-        string="Quiz Sort Paragraphs")
     module_openeducat_live = fields.Boolean(
         string="Live Meeting")
     module_openeducat_live_assignment = fields.Boolean(
@@ -229,10 +196,27 @@ class ResConfigSettings(models.TransientModel):
         string="Database Backup to Onedrive")
     module_auto_database_backup_sftp = fields.Boolean(
         string="Database Backup to Remote SFTP Server")
-    attendance_subject_generic = fields.Selection([('subject', 'Subject Wise'), ('generic', 'Generic')],
-                                                  help="Subject-specific attendance will be gathered during a "
-                                                       "particular session, whereas general attendance will be "
-                                                       "collected by one responsible faculty member for the "
-                                                       "entire day.",
-                                                  config_parameter="attendance_subject_generic_parameter",
-                                                  default='subject')
+    attendance_subject_generic = fields.Selection(
+        [('subject', 'Subject Wise'), ('generic', 'Generic')],
+        help=(
+            "Subject-specific attendance will be gathered during a "
+            "particular session, whereas general attendance will be "
+            "collected by one responsible faculty member for the "
+            "entire day."
+        ),
+        config_parameter="attendance_subject_generic_parameter",
+        default='subject'
+    )
+    module_openeducat_thesis = fields.Boolean(string='Thesis')
+    module_openeducat_convocation = fields.Boolean(string='Convocation')
+    module_openeducat_grading_migration_bridge = fields.Boolean(
+        string="Student Migration Grading Bridge")
+    module_openeducat_exam_migration_bridge = fields.Boolean(
+        string="Student Migration Exam Bridge")
+    module_openeducat_student_feedback_management = fields.Boolean(
+        string="Student Feedback")
+    module_openeducat_student_withdrawal_mgmt = fields.Boolean(
+        string="Student Withdrawal Management")
+    module_openeducat_admission_grading_bridge = fields.Boolean(string="Admission Grading Bridge")
+    module_openeducat_student_mentor = fields.Boolean(
+        string="Student Mentor")

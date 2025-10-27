@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -19,7 +18,7 @@
 #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class OpAttendanceLine(models.Model):
@@ -58,6 +57,7 @@ class OpAttendanceLine(models.Model):
     attendance_type_id = fields.Many2one(
         'op.attendance.type', 'Attendance Type',
         required=False, tracking=True)
+    state = fields.Selection(related = "attendance_id.state")
 
     _sql_constraints = [
         ('unique_student',

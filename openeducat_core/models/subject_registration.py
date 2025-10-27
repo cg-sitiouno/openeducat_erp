@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    OpenEduCat Inc
@@ -19,7 +18,7 @@
 #
 ###############################################################################
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -44,7 +43,7 @@ class OpSubjectRegistration(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'), ('submitted', 'Submitted'),
         ('approved', 'Approved'), ('rejected', 'Rejected')],
-        default='draft', string='state', copy=False,
+        default='draft', string='State', copy=False,
         tracking=True)
     max_unit_load = fields.Float('Maximum Unit Load',
                                  tracking=True)

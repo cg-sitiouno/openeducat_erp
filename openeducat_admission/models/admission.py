@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenEduCat Inc
@@ -22,16 +21,14 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-import logging
-
-_logger = logging.getLogger(__name__)
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class OpAdmission(models.Model):
     _name = "op.admission"
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'mail.tracking.duration.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin',
+                'mail.tracking.duration.mixin']
     _rec_name = "application_number"
     _description = "Admission"
     _order = 'id DESC'
@@ -94,7 +91,7 @@ class OpAdmission(models.Model):
     family_income = fields.Float(
         'Family Income')
     gender = fields.Selection(
-        [('m', 'Male'), ('f', 'Female'), ('o', 'Other')],
+        [('m', 'Male'), ('f', 'Female')],
         string='Gender',
         required=True)
     student_id = fields.Many2one(
@@ -114,7 +111,8 @@ class OpAdmission(models.Model):
         'res.company', string='Company',
         default=lambda self: self.env.user.company_id)
     program_id = fields.Many2one('op.program', string="Program", tracking=True)
-    course_ids = fields.Many2many('op.course', string='Courses', compute='compute_course_ids')
+    course_ids = fields.Many2many('op.course', string='Courses',
+                                  compute='_compute_course_ids')
 
     _sql_constraints = [
         ('unique_application_number',
@@ -123,13 +121,13 @@ class OpAdmission(models.Model):
     ]
 
     @api.depends('register_id')
-    def compute_course_ids(self):
+    def _compute_course_ids(self):
         for data in self:
             if data.register_id:
                 if data.register_id.admission_base == 'program':
                     course_list = []
                     for rec in data.register_id.admission_fees_line_ids:
-                        course_list.append(rec.course_id.id) if rec.course_id.id not in course_list else None
+                        course_list.append(rec.course_id.id) if rec.course_id.id not in course_list else None  # noqa
                     data.course_ids = [(6, 0, course_list)]
                 else:
                     data.course_id = data.register_id.course_id.id
@@ -212,34 +210,9 @@ class OpAdmission(models.Model):
             start_date = fields.Date.from_string(rec.register_id.start_date)
             end_date = fields.Date.from_string(rec.register_id.end_date)
             application_date = fields.Date.from_string(rec.application_date)
-
-            _logger.info(
-                "Admission validation - rec.id=%s, register_id=%s, "
-                "start_date=%s (raw=%s), end_date=%s (raw=%s), application_date=%s (raw=%s); "
-                "types: start=%s, end=%s, app=%s",
-                rec.id,
-                rec.register_id.id if rec.register_id else None,
-                start_date,
-                rec.register_id.start_date if rec.register_id else None,
-                end_date,
-                rec.register_id.end_date if rec.register_id else None,
-                application_date,
-                rec.application_date,
-                type(start_date).__name__,
-                type(end_date).__name__,
-                type(application_date).__name__,
-            )
-            try:
-                if application_date < start_date or application_date > end_date:
-                    raise ValidationError(_(
-                        "Application Date should be between Start Date & End Date of Admission Register."))
-            except Exception:
-                _logger.exception(
-                    "Admission date comparison failed for rec.id=%s with values: "
-                    "application_date=%s, start_date=%s, end_date=%s",
-                    rec.id, application_date, start_date, end_date
-                )
-                raise
+            if application_date < start_date or application_date > end_date:
+                raise ValidationError(_(
+                    "Application Date should be between Start Date & End Date of Admission Register."))  # noqa
 
     @api.constrains('birth_date')
     def _check_birthdate(self):
@@ -281,7 +254,7 @@ class OpAdmission(models.Model):
             if enable_create_student_user:
                 student_user = self.env['res.users'].create({
                     'name': student.name,
-                    'login': student.email if student.email else student.application_number,
+                    'login': student.email if student.email else student.application_number,  # noqa
                     'image_1920': self.image or False,
                     'is_student': True,
                     'company_id': self.company_id.id,
@@ -346,7 +319,8 @@ class OpAdmission(models.Model):
                 if vals:
                     record.student_id = student_id = self.env[
                         'op.student'].create(vals).id
-                    record.partner_id = record.student_id.partner_id.id if record else False
+                    record.partner_id = record.student_id.partner_id.id \
+                        if record else False
 
             else:
                 student_id = record.student_id.id
@@ -529,5 +503,6 @@ class OpStudentCourseInherit(models.Model):
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    enable_create_student_user = fields.Boolean(config_parameter='openeducat_admission.enable_create_student_user',
-                                                string='Create Student User')
+    enable_create_student_user = fields.Boolean(
+        config_parameter='openeducat_admission.enable_create_student_user',
+        string='Create Student User')
