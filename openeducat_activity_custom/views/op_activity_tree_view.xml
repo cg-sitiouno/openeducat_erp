@@ -1,0 +1,10 @@
+<record id="op_activity_view_tree_custom" model="ir.ui.view">
+    <field name="name">op.activity.tree.custom</field>
+    <field name="model">op.activity</field>
+    <field name="arch" type="xml">
+        <tree string="Actividades Custom">
+            <field name="name"/>
+            <field name="x_priority"/>
+        </tree>
+    </field>
+</record>

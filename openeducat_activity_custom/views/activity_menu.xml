@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_activity_custom_view" model="ir.actions.act_window">
+            <field name="name">Gestión de Actividades Custom</field>
+            <field name="res_model">op.activity</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_activity_custom_root"
+                  name="Actividades Custom"
+                  sequence="10"/>
+
+        <menuitem id="menu_activity_custom_sub"
+                  name="Actividades"
+                  action="action_activity_custom_view"
+                  parent="menu_activity_custom_root"
+                  sequence="1"/>
+    </data>
+</odoo>

@@ -21,3 +21,4 @@
 from . import activity
 from . import activity_type
 from . import student
+from . import res_config_settings_fix
