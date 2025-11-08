@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-  <record id="view_op_activity_form_inherit" model="ir.ui.view">
-    <field name="name">op.activity.form.inherit.custom</field>
-    <field name="model">op.activity</field>
-    <field name="inherit_id" ref="openeducat_activity.view_op_activity_form"/>
-    <field name="arch" type="xml">
-        <xpath expr="//sheet" position="inside"> 
-            <field name="x_priority"/>
+  <data>
+    <record id="view_op_activity_form_inherit_custom" model="ir.ui.view">
+      <field name="name">op.activity.form.inherit.custom</field>
+      <field name="model">op.activity</field>
+      <field name="inherit_id" ref="openeducat_activity.view_op_activity_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet//group[1]" position="inside">
+          <field name="x_priority"/>
         </xpath>
-    </field>
-</record>
-    </data>
+      </field>
+    </record>
+  </data>
 </odoo>

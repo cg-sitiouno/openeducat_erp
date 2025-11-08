@@ -1,0 +1,30 @@
+<odoo>
+  <data>
+    <record id="view_op_activity_list_custom_base" model="ir.ui.view">
+      <field name="name">op.activity.list.custom.base</field>
+      <field name="model">op.activity</field>
+      <field name="arch" type="xml">
+        <list string="Actividades">
+          <field name="x_rec_name"/>
+          <field name="x_priority"/>
+          <field name="create_date"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- Search propio (si ya lo tienes, déjalo igual) -->
+    <record id="view_op_activity_search_custom" model="ir.ui.view">
+      <field name="name">op.activity.search.custom</field>
+      <field name="model">op.activity</field>
+      <field name="priority" eval="99"/>
+      <field name="arch" type="xml">
+        <search string="Buscar Actividades">
+          <field name="x_priority"/>
+          <filter name="prio_low"  string="Prioridad baja"  domain="[('x_priority','=','0')]"/>
+          <filter name="prio_med"  string="Prioridad media" domain="[('x_priority','=','1')]"/>
+          <filter name="prio_high" string="Prioridad alta"  domain="[('x_priority','=','2')]"/>
+        </search>
+      </field>
+    </record>
+  </data>
+</odoo>
