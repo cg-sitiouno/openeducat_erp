@@ -1,0 +1,16 @@
+<odoo>
+  <data>
+    <record id="view_op_admission_form_inherit_cert" model="ir.ui.view">
+      <field name="name">op.admission.form.inherit.cert</field>
+      <field name="model">op.admission</field>
+      <!-- Ajusta este inherit_id si tu xml_id difiere -->
+      <field name="inherit_id" ref="openeducat_admission.view_op_admission_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet//group[1]" position="inside">
+          <field name="certificate_eligible"/>
+          <field name="certificate_id" readonly="1"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

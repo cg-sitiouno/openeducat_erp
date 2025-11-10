@@ -1,0 +1,18 @@
+<odoo>
+  <data>
+    <template id="certificate_qweb">
+      <t t-call="web.basic_layout">
+        <div class="page" style="padding:40px;">
+          <h2 style="text-align:center;">Certificado de participación</h2>
+          <p style="margin-top:24px;">
+            Se certifica que <b><t t-esc="doc.student_id.name"/></b>,
+            cédula <b><t t-esc="doc.national_id"/></b>,
+            participó en el curso <b><t t-esc="doc.course_id.name"/></b>
+            con <b><t t-esc="doc.hours"/></b> horas académicas.
+          </p>
+          <p>Fecha de emisión: <t t-esc="doc.issue_date"/></p>
+        </div>
+      </t>
+    </template>
+  </data>
+</odoo>

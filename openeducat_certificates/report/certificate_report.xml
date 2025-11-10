@@ -1,0 +1,12 @@
+<odoo>
+  <data>
+    <report
+      id="action_certificate"
+      string="Certificado"
+      model="op.certificate"
+      report_type="qweb-pdf"
+      name="openeducat_certificates.certificate_qweb"
+      file="openeducat_certificates.certificate_qweb"
+    />
+  </data>
+</odoo>

@@ -1,0 +1,21 @@
+{
+    "name": "OpenEduCat Certificates ITSU",
+    "version": "18.0.1.0.0",
+    "summary": "Certificados públicos por cédula integrados con Admission",
+    "author": "ITSU",
+    "license": "LGPL-3",
+    "depends": ["openeducat_admission", "website"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/certificate_template_views.xml",
+        "views/certificate_views.xml",
+        "views/admission_register_inherit.xml",
+        "views/admission_inherit.xml",
+        "views/certificate_menu.xml",
+        "report/certificate_report.xml",
+        "report/certificate_qweb.xml",
+        "views/website_verify_templates.xml",
+    ],
+    "application": False,
+    "installable": True,
+}

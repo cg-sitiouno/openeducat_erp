@@ -1,0 +1,8 @@
+<odoo>
+  <data>
+    <!-- Menú superior propio -->
+    <menuitem id="menu_op_certificates_root" name="Certificates" sequence="80"/>
+    <menuitem id="menu_op_certificates" name="Certificados" parent="menu_op_certificates_root" sequence="1" action="action_op_certificate"/>
+    <menuitem id="menu_op_certificate_templates" name="Plantillas" parent="menu_op_certificates_root" sequence="2" action="action_op_certificate_template"/>
+  </data>
+</odoo>
