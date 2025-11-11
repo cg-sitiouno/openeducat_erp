@@ -52,9 +52,9 @@
           }
           /* Aproxima las posiciones (porcentaje vertical) a tu diseño */
           .ov-name  { top: 45%; font-style: italic; font-weight: 700;
-                      font-size: clamp(36px, 4.8vw, 52px); }
-          .ov-id    { top: 55%; font-size: clamp(32px, 1.6vw, 16px); }
-          .ov-desc  { top: 62%; font-size: clamp(12px, 1.7vw, 18px); }
+                      font-size: clamp(36px, 4.8vw, 52px); color:#0b3042}
+          .ov-id    { top: 55%; font-size: clamp(32px, 1.6vw, 16px);color:#0b3042 }
+          .ov-desc  { top: 62%; font-size: clamp(12px, 1.7vw, 18px);color:#0b3042 }
 
           .cert-actions { margin: 16px 0 32px; }
           @media print {
