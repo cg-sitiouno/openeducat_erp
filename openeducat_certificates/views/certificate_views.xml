@@ -1,52 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+
+    <!-- LISTA -->
     <record id="view_op_certificate_list" model="ir.ui.view">
       <field name="name">op.certificate.list</field>
       <field name="model">op.certificate</field>
       <field name="arch" type="xml">
         <list string="Certificados">
-          <field name="name"/>
-          <field name="student_id"/>
-          <field name="national_id"/>
-          <field name="course_id"/>
-          <field name="hours"/>
-          <field name="issue_date"/>
-          <field name="state"/>
+          <field name="student_id" string="Student"/>
+          <field name="national_id" string="Cédula"/>
+          <field name="register_id" string="Admission"/>
+          <field name="issue_date" string="Fecha emisión"/>
+          <field name="state" string="State"/>
         </list>
       </field>
     </record>
+
+    <!-- FORMULARIO -->
     <record id="view_op_certificate_form" model="ir.ui.view">
       <field name="name">op.certificate.form</field>
       <field name="model">op.certificate</field>
       <field name="arch" type="xml">
-        <form string="Certificado">
+        <form string="Certificado de participación">
+          <header>
+            <button name="action_set_draft" type="object"
+                    string="Borrador" class="btn-secondary"
+                    invisible="state == 'draft'"/>
+            <button name="action_issue" type="object"
+                    string="Emitir" class="btn-primary"
+                    invisible="state == 'issued'"/>
+            <button name="action_revoke" type="object"
+                    string="Revocar" class="btn-danger"
+                    invisible="state == 'revoked'"/>
+
+            <field name="state" widget="statusbar"
+                   statusbar_visible="draft,issued,revoked"/>
+          </header>
+
           <sheet>
             <group>
-              <field name="name"/>
-              <field name="state"/>
+              <group>
+                <field name="student_id"/>
+                <field name="national_id" string="Cédula"/>
+              </group>
+              <group>
+                <field name="register_id" string="Admission"/>
+                <field name="template_id" string="Template"/>
+              </group>
             </group>
+
             <group>
-              <field name="student_id"/>
-              <field name="national_id"/>
+              <field name="issue_date" string="Fecha de emisión"
+                     required="1" readonly="state != 'draft'"/>
             </group>
-            <group>
+
+            <!-- Ocultos pero útiles -->
+            <group invisible="1">
               <field name="admission_id"/>
-              <field name="register_id"/>
               <field name="course_id"/>
-            </group>
-            <group>
-              <field name="template_id"/>
               <field name="hours"/>
-              <field name="issue_date"/>
+              <field name="name"/>
             </group>
           </sheet>
         </form>
       </field>
     </record>
+
+    <!-- ACCIÓN -->
     <record id="action_op_certificate" model="ir.actions.act_window">
       <field name="name">Certificados</field>
       <field name="res_model">op.certificate</field>
       <field name="view_mode">list,form</field>
     </record>
+
   </data>
 </odoo>

@@ -2,34 +2,41 @@
 <odoo>
   <data>
 
-<template id="verify_form" name="Verificar Certificado">
-  <t t-call="website.layout">
-    <t t-set="title">Verificar certificado</t>
-    <div class="container py-5">
-      <h2>Verificar certificado</h2>
-      <form action="/certificates/verify/result" method="post" class="mt-3">
-        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-        <div class="form-group">
-          <label>Cédula</label>
-          <input class="form-control" type="text" name="national_id" required="required"/>
+    <template id="verify_form" name="Verificar Certificado">
+      <t t-call="website.layout">
+        <t t-set="title">Verificar certificado</t>
+        <div class="container py-5">
+          <h2>Verificar certificado</h2>
+          <form action="/certificates/verify/result" method="post" class="mt-3">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <div class="form-group">
+              <label>Cédula</label>
+              <input class="form-control" type="text" name="national_id" required="required"/>
+            </div>
+            <button class="btn btn-primary mt-3" type="submit">Buscar</button>
+          </form>
         </div>
-        <button class="btn btn-primary mt-3" type="submit">Buscar</button>
-      </form>
-    </div>
-  </t>
-</template>
-
-
+      </t>
+    </template>
 
     <template id="verify_ok" name="Certificado encontrado">
       <t t-call="website.layout">
         <div class="container py-5">
           <h3>Certificado válido</h3>
+
           <p><b>Estudiante:</b> <t t-esc="cert.student_id.name"/></p>
           <p><b>Cédula:</b> <t t-esc="cert.national_id"/></p>
-          <p><b>Curso:</b> <t t-esc="cert.course_id.name"/></p>
-          <p><b>Horas:</b> <t t-esc="cert.hours"/></p>
+
+          <!-- SIEMPRE desde la plantilla -->
+          <p><b>Curso:</b>
+            <t t-esc="cert.template_id.course_id and cert.template_id.course_id.name or ''"/>
+          </p>
+          <p><b>Horas:</b>
+            <t t-esc="cert.template_id.hours or 0.0"/>
+          </p>
+
           <p><b>Fecha de emisión:</b> <t t-esc="cert.issue_date"/></p>
+
           <a class="btn btn-secondary mt-3"
              t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
             Descargar PDF
