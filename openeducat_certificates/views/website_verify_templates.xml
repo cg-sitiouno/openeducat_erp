@@ -2,6 +2,7 @@
 <odoo>
   <data>
 
+    <!-- FORMULARIO DE BÚSQUEDA -->
     <template id="verify_form" name="Verificar Certificado">
       <t t-call="website.layout">
         <t t-set="title">Verificar certificado</t>
@@ -19,58 +20,95 @@
       </t>
     </template>
 
+    <!-- RESULTADO EXITOSO -->
     <template id="verify_ok" name="Certificado encontrado">
       <t t-call="website.layout">
-        <!-- URL del fondo a partir del binario de la plantilla -->
-        <t t-set="bg_url" t-value="'/web/image/op.certificate.template/%s/bg_image' % cert.template_id.id"/>
+        <t t-set="title">Certificado válido</t>
 
-        <!-- Estilos mínimos; puedes moverlos a assets si prefieres -->
         <style>
-          .o-cert-wrap{max-width:1100px;margin:2rem auto;padding:0 1rem;}
-          .o-cert-card{
-            position:relative;min-height:680px;background:#fff;
-            background-size:cover;background-position:center;background-repeat:no-repeat;
-            border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.08);
-            padding:140px 120px; /* ajusta según tu diseño */
+          /* Marco que usa el tamaño NATURAL de la imagen */
+          .cert-frame {
+            display: inline-block;           /* ancho = ancho de la imagen */
+            position: relative;              /* para posicionar overlays */
+            line-height: 0;                  /* elimina gaps bajo la imagen */
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.12);
+            overflow: hidden;
           }
-          .o-cert-content{position:relative;z-index:1;color:#111;font-size:18px;line-height:1.4;}
-          .o-cert-title{font-size:36px;font-weight:700;margin-bottom:18px;}
-          @media (max-width: 768px){
-            .o-cert-card{padding:60px 24px;min-height:unset;}
-            .o-cert-title{font-size:28px;}
+          .cert-bg {
+            display: block;
+            height: auto;
+            max-width: 100%;
+          }
+          /* Capa de texto superpuesta */
+          .cert-layer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 82%;
+            text-align: center;
+            color: #000;
+            line-height: 1.35;
+          }
+          /* Aproxima las posiciones (porcentaje vertical) a tu diseño */
+          .ov-name  { top: 45%; font-style: italic; font-weight: 700;
+                      font-size: clamp(36px, 4.8vw, 52px); }
+          .ov-id    { top: 55%; font-size: clamp(32px, 1.6vw, 16px); }
+          .ov-desc  { top: 62%; font-size: clamp(12px, 1.7vw, 18px); }
+
+          .cert-actions { margin: 16px 0 32px; }
+          @media print {
+            header, footer, .o_main_navbar, .cert-actions { display:none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .cert-frame { box-shadow: none; }
           }
         </style>
 
-        <div class="o-cert-wrap">
-          <div class="o-cert-card" t-attf-style="background-image:url('{{ bg_url }}');">
-            <div class="o-cert-content">
-              <h3 class="o-cert-title">Certificado válido</h3>
+        <div class="container py-4 text-center">
+          <div class="cert-frame">
+            <!-- Fondo desde la plantilla (usa su tamaño real) -->
+            <img class="cert-bg"
+                 t-att-src="'/web/image/op.certificate.template/%s/bg_image' % cert.template_id.id"
+                 alt="Certificado"/>
 
-              <p><b>Estudiante:</b> <t t-esc="cert.student_id.name"/></p>
-              <p><b>Cédula:</b> <t t-esc="cert.national_id"/></p>
-
-              <!-- SIEMPRE desde la plantilla -->
-              <p><b>Curso:</b>
-                <t t-esc="cert.template_id.course_id and cert.template_id.course_id.name or ''"/>
-              </p>
-              <p><b>Horas:</b> <t t-esc="cert.template_id.hours or 0.0"/></p>
-
-              <p><b>Fecha de emisión:</b> <t t-esc="cert.issue_date"/></p>
-
-              <a class="btn btn-secondary mt-3"
-                 t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
-                Descargar PDF
-              </a>
+            <!-- Nombre centrado en cursiva -->
+            <div class="cert-layer ov-name">
+              <t t-esc="cert.student_id.name"/>
             </div>
+
+            <!-- Cédula -->
+            <div class="cert-layer ov-id">
+              Cédula de identidad: <t t-esc="cert.national_id"/>
+            </div>
+
+            <!-- Descripción: curso (de la plantilla) + fecha (del certificado) + horas (de la plantilla) -->
+            <div class="cert-layer ov-desc">
+              Por haber asistido a
+              <t t-esc="cert.template_id.course_id and cert.template_id.course_id.name or ''"/>,
+              realizado el
+              <span t-field="cert.issue_date" t-options="{'widget': 'date'}"/>,
+              con una duración de
+              <t t-esc="cert.template_id.hours or 0.0"/> horas académicas.
+            </div>
+          </div>
+
+          <div class="cert-actions text-start">
+            <a class="btn btn-dark"
+               t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
+              Descargar PDF
+            </a>
           </div>
         </div>
       </t>
     </template>
 
+    <!-- RESULTADO FALLIDO -->
     <template id="verify_fail" name="No encontrado">
       <t t-call="website.layout">
         <div class="container py-5">
-          <h3>No se encontró un certificado emitido con esa cédula.</h3>
+          <div class="alert alert-warning shadow-sm">
+            <strong>No se encontró un certificado emitido con esa cédula.</strong>
+          </div>
         </div>
       </t>
     </template>
