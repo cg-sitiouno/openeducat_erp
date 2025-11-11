@@ -21,26 +21,48 @@
 
     <template id="verify_ok" name="Certificado encontrado">
       <t t-call="website.layout">
-        <div class="container py-5">
-          <h3>Certificado válido</h3>
+        <!-- URL del fondo a partir del binario de la plantilla -->
+        <t t-set="bg_url" t-value="'/web/image/op.certificate.template/%s/bg_image' % cert.template_id.id"/>
 
-          <p><b>Estudiante:</b> <t t-esc="cert.student_id.name"/></p>
-          <p><b>Cédula:</b> <t t-esc="cert.national_id"/></p>
+        <!-- Estilos mínimos; puedes moverlos a assets si prefieres -->
+        <style>
+          .o-cert-wrap{max-width:1100px;margin:2rem auto;padding:0 1rem;}
+          .o-cert-card{
+            position:relative;min-height:680px;background:#fff;
+            background-size:cover;background-position:center;background-repeat:no-repeat;
+            border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.08);
+            padding:140px 120px; /* ajusta según tu diseño */
+          }
+          .o-cert-content{position:relative;z-index:1;color:#111;font-size:18px;line-height:1.4;}
+          .o-cert-title{font-size:36px;font-weight:700;margin-bottom:18px;}
+          @media (max-width: 768px){
+            .o-cert-card{padding:60px 24px;min-height:unset;}
+            .o-cert-title{font-size:28px;}
+          }
+        </style>
 
-          <!-- SIEMPRE desde la plantilla -->
-          <p><b>Curso:</b>
-            <t t-esc="cert.template_id.course_id and cert.template_id.course_id.name or ''"/>
-          </p>
-          <p><b>Horas:</b>
-            <t t-esc="cert.template_id.hours or 0.0"/>
-          </p>
+        <div class="o-cert-wrap">
+          <div class="o-cert-card" t-attf-style="background-image:url('{{ bg_url }}');">
+            <div class="o-cert-content">
+              <h3 class="o-cert-title">Certificado válido</h3>
 
-          <p><b>Fecha de emisión:</b> <t t-esc="cert.issue_date"/></p>
+              <p><b>Estudiante:</b> <t t-esc="cert.student_id.name"/></p>
+              <p><b>Cédula:</b> <t t-esc="cert.national_id"/></p>
 
-          <a class="btn btn-secondary mt-3"
-             t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
-            Descargar PDF
-          </a>
+              <!-- SIEMPRE desde la plantilla -->
+              <p><b>Curso:</b>
+                <t t-esc="cert.template_id.course_id and cert.template_id.course_id.name or ''"/>
+              </p>
+              <p><b>Horas:</b> <t t-esc="cert.template_id.hours or 0.0"/></p>
+
+              <p><b>Fecha de emisión:</b> <t t-esc="cert.issue_date"/></p>
+
+              <a class="btn btn-secondary mt-3"
+                 t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
+                Descargar PDF
+              </a>
+            </div>
+          </div>
         </div>
       </t>
     </template>
