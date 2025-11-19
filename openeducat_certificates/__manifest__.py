@@ -17,7 +17,7 @@
         "views/admission_inherit.xml",
 
         # Assets para impresión HTML
-        "views/assets_cert_print.xml",
+        # "views/assets_cert_print.xml",
 
         # Reporte: primero template, luego acción
         "report/certificate_qweb.xml",
