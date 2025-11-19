@@ -6,27 +6,25 @@
     "license": "LGPL-3",
     "depends": ["openeducat_admission", "website"],
     "data": [
+        # Seguridad
         "security/ir.model.access.csv",
 
-    # Acciones y vistas de certificados
-    "views/certificate_views.xml",
+        # Vistas backend
+        "views/certificate_views.xml",
+        "views/certificate_template_views.xml",
+        "views/certificate_menu.xml",
+        "views/admission_register_inherit.xml",
+        "views/admission_inherit.xml",
 
-    # Vistas + acción de plantillas
-    "views/certificate_template_views.xml",
+        # Assets para impresión HTML
+        "views/assets_cert_print.xml",
 
-    # Menús (usan las acciones anteriores)
-    "views/certificate_menu.xml",
+        # Reporte: primero template, luego acción
+        "report/certificate_qweb.xml",
+        "report/certificate_report.xml",
 
-    # Inherits
-    "views/admission_register_inherit.xml",
-    "views/admission_inherit.xml",
-
-    # Reportes
-    "report/certificate_report.xml",
-    "report/certificate_qweb.xml",
-
-    # Website
-    "views/website_verify_templates.xml",
+        # Website
+        "views/website_verify_templates.xml",
     ],
     "application": False,
     "installable": True,

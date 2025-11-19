@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Estilos para que el HTML se imprima idéntico al diseño web -->
+  <template id="assets_frontend_cert_print" inherit_id="web.assets_frontend">
+    <xpath expr="." position="inside">
+      <style>
+        @page { size: A4; margin: 0; }
+        html, body { height: 100%; margin: 0 !important; }
+
+        .cert-page{
+          width:210mm; height:297mm; position:relative; overflow:hidden; background:#fff;
+          -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        .cert-bg{
+          position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+        }
+        .cert-content{
+          position:relative; z-index:1; padding: 25mm 20mm; color:#123;
+          font-family: "Inter", Arial, sans-serif;
+        }
+        .tit{ margin:0; text-align:center; font-size:28pt; letter-spacing:.5pt; }
+        .sub{ margin:6mm 0 0; text-align:center; font-size:14pt; color:#2b58a8; }
+        .nombre{ margin-top:22mm; text-align:center; font-size:22pt; font-weight:700; }
+        .dni{ margin-top:8mm; text-align:center; font-size:12pt; }
+        .detalle{ margin-top:10mm; text-align:center; font-size:11pt; }
+
+        /* Ocultar cabeceras/footers del website al imprimir */
+        @media print{
+          .o_main_navbar, header, footer { display:none !important; }
+          .o_page { padding:0 !important; }
+        }
+      </style>
+
+      <!-- Auto-abrir diálogo de impresión si se llama con ?print=1 -->
+      <script>
+        (function(){
+          try{
+            const u=new URL(location.href);
+            if(u.pathname.startsWith('/report/html/openeducat_certificates.report_certificate_document/')
+               && u.searchParams.get('print')==='1'){
+              addEventListener('load',()=>setTimeout(()=>print(),300));
+            }
+          }catch(e){}
+        })();
+      </script>
+    </xpath>
+  </template>
+</odoo>

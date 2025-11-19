@@ -92,12 +92,11 @@
             </div>
           </div>
 
-          <div class="cert-actions text-start">
-            <a class="btn btn-dark"
-               t-att-href="'/report/pdf/openeducat_certificates.action_certificate/%s' % cert.id">
-              Descargar PDF
+         <!-- <div class="cert-actions text-start">
+            <a class="btn btn-dark" t-att-href="'/certificates/print/%s-%s' % (slug(cert), cert.id)">
+             Descargar PDF
             </a>
-          </div>
+          </div>-->
         </div>
       </t>
     </template>
