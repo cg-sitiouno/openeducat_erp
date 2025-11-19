@@ -1,47 +1,89 @@
 # controllers/website_certificates.py
 from odoo import http
 from odoo.http import request
-import re
 from werkzeug.exceptions import NotFound
+import re
+import base64
+
 
 class WebsiteCertificates(http.Controller):
 
+    # -----------------------------
+    # FORMULARIO DE BÚSQUEDA
+    # -----------------------------
     @http.route("/certificates/verify", type="http", auth="public", website=True)
     def verify_form(self, **kwargs):
         return request.render("openeducat_certificates.verify_form", {})
 
-    @http.route("/certificates/verify/result", type="http", auth="public", methods=["POST"], website=True, csrf=True)
+    # -----------------------------
+    # RESULTADO DE BÚSQUEDA
+    # -----------------------------
+    @http.route(
+        "/certificates/verify/result",
+        type="http",
+        auth="public",
+        methods=["POST"],
+        website=True,
+        csrf=True,
+    )
     def verify_result(self, **post):
         nid = (post.get("national_id") or "").strip()
-        cert = request.env["op.certificate"].sudo().search([
-            ("national_id", "=", nid),
-            ("state", "=", "issued")
-        ], limit=1)
-        tpl = "openeducat_certificates.verify_ok" if cert else "openeducat_certificates.verify_fail"
+        cert = (
+            request.env["op.certificate"]
+            .sudo()
+            .search(
+                [
+                    ("national_id", "=", nid),
+                    ("state", "=", "issued"),
+                ],
+                limit=1,
+            )
+        )
+        tpl = (
+            "openeducat_certificates.verify_ok"
+            if cert
+            else "openeducat_certificates.verify_fail"
+        )
         return request.render(tpl, {"cert": cert})
 
-    # -------------------------------------------------------
-    # Descarga/impresión: redirige a /report/html ... ?print=1
-    # -------------------------------------------------------
-    @http.route(['/certificates/print/<path:anything>'], type='http', auth='public', website=True)
-    def print_certificate(self, anything, **kwargs):
+    # -------------------------------------------------
+    # IMAGEN DE FONDO DEL TEMPLATE (PÚBLICA)
+    # /certificates/template_bg/<id>
+    # -------------------------------------------------
+    @http.route(
+        "/certificates/template_bg/<int:template_id>",
+        type="http",
+        auth="public",
+        website=True,
+    )
+    def certificate_template_bg(self, template_id, **kwargs):
         """
-        Acepta:
-          - /certificates/print/2
-          - /certificates/print/certificado-de-participacion-2
-        Extrae el ID y abre el HTML listo para imprimir (texto no se quema).
+        Devuelve la imagen de fondo (bg_image) del template de certificado,
+        siempre con sudo() para que funcione también como usuario público.
         """
-        m = re.search(r'(\d+)$', (anything or ''))
-        if not m:
-            raise NotFound()
-        cert_id = int(m.group(1))
-
-        Cert = request.env['op.certificate'].sudo()
-        cert = Cert.browse(cert_id)
-        if not cert.exists():
+        Template = request.env["op.certificate.template"].sudo()
+        template = Template.browse(template_id)
+        if not template.exists() or not template.bg_image:
             raise NotFound()
 
-        # Acción definida como qweb-html
-        report_name = 'openeducat_certificates.report_certificate_document'
-        url = "/report/html/%s/%s?print=1" % (report_name, cert.id)
-        return request.redirect(url)
+        try:
+            # bg_image es binario base64 → lo decodificamos
+            image_data = base64.b64decode(template.bg_image)
+        except Exception:
+            # Si algo va mal con la decodificación, devolvemos 404
+            raise NotFound()
+
+        # Si tu campo tiene un mime-type (por ejemplo bg_image_mime), úsalo:
+        mime = getattr(template, "bg_image_mime", None) or "image/png"
+
+        headers = [("Content-Type", mime)]
+        return request.make_response(image_data, headers=headers)
+
+    # -------------------------------------------
+    # (OPCIONAL) RUTA DE IMPRESIÓN / PDF
+    # La dejamos comentada por ahora, para no usar PDFs.
+    # -------------------------------------------
+    # @http.route(['/certificates/print/<path:anything>'], type='http', auth='public', website=True)
+    # def print_certificate(self, anything, **kwargs):
+    #     # Aquí iría la lógica de PDF si la vuelves a activar más adelante
+    #     raise NotFound()
