@@ -27,13 +27,65 @@ class WebsiteCertificates(http.Controller):
         csrf=True,
     )
     def verify_result(self, **post):
+        """Buscar certificado por cédula o hash de verificación."""
         nid = (post.get("national_id") or "").strip()
+        hash_value = (post.get("verification_hash") or "").strip()
+        
+        # Buscar por hash si se proporciona, sino por cédula
+        if hash_value:
+            cert = (
+                request.env["op.certificate"]
+                .sudo()
+                .search(
+                    [
+                        ("verification_hash", "=", hash_value),
+                        ("state", "=", "issued"),
+                    ],
+                    limit=1,
+                )
+            )
+        elif nid:
+            cert = (
+                request.env["op.certificate"]
+                .sudo()
+                .search(
+                    [
+                        ("national_id", "=", nid),
+                        ("state", "=", "issued"),
+                    ],
+                    limit=1,
+                )
+            )
+        else:
+            cert = request.env["op.certificate"].sudo().browse()
+        
+        tpl = (
+            "openeducat_certificates.verify_ok"
+            if cert
+            else "openeducat_certificates.verify_fail"
+        )
+        return request.render(tpl, {"cert": cert})
+
+    # -----------------------------
+    # VERIFICACIÓN POR QR (HASH)
+    # -----------------------------
+    @http.route(
+        "/certificates/verify/qr/<string:hash_value>",
+        type="http",
+        auth="public",
+        website=True,
+    )
+    def verify_qr(self, hash_value, **kwargs):
+        """
+        Verificación directa por hash desde código QR.
+        Redirige al template de verificación con el certificado encontrado.
+        """
         cert = (
             request.env["op.certificate"]
             .sudo()
             .search(
                 [
-                    ("national_id", "=", nid),
+                    ("verification_hash", "=", hash_value),
                     ("state", "=", "issued"),
                 ],
                 limit=1,
@@ -45,6 +97,7 @@ class WebsiteCertificates(http.Controller):
             else "openeducat_certificates.verify_fail"
         )
         return request.render(tpl, {"cert": cert})
+
 
     # -------------------------------------------------
     # IMAGEN DE FONDO DEL TEMPLATE (PÚBLICA)

@@ -1,4 +1,6 @@
 # models/certificate.py
+import hashlib
+from urllib.parse import quote
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
@@ -62,6 +64,21 @@ class OpCertificate(models.Model):
         string="Horas académicas"
     )
 
+    # Campos de firma digital
+    verification_hash = fields.Char(
+        string="Hash de verificación",
+        readonly=True,
+        index=True,
+        copy=False,
+        help="Hash SHA-256 único para verificación de autenticidad del certificado."
+    )
+
+    qr_code_url = fields.Char(
+        string="URL del código QR",
+        compute="_compute_qr_code_url",
+        help="URL del código QR generado dinámicamente para verificación."
+    )
+
     state = fields.Selection(
         [
             ("draft", "Borrador"),
@@ -93,6 +110,33 @@ class OpCertificate(models.Model):
                 raise ValidationError("El certificado debe tener cédula (national_id).")
 
     # ---------------------------
+    # Firma digital y QR
+    # ---------------------------
+
+    def _generate_verification_hash(self):
+        """Genera un hash SHA-256 único basado en los datos del certificado."""
+        self.ensure_one()
+        # Datos que conforman el hash: student_id, national_id, issue_date, template_id
+        data_string = f"{self.student_id.id}-{self.national_id}-{self.issue_date}-{self.template_id.id}"
+        hash_value = hashlib.sha256(data_string.encode('utf-8')).hexdigest()
+        return hash_value
+
+    @api.depends('verification_hash')
+    def _compute_qr_code_url(self):
+        """Genera la URL del código QR usando QRServer.com API."""
+        for rec in self:
+            if rec.verification_hash:
+                # Obtener la URL base del sistema
+                base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                # URL de verificación pública
+                verify_url = f"{base_url}/certificates/verify/qr/{rec.verification_hash}"
+                # URL del QR usando QRServer.com API (300x300 px)
+                # Más confiable que Google Charts API
+                rec.qr_code_url = f"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={quote(verify_url)}"
+            else:
+                rec.qr_code_url = False
+
+    # ---------------------------
     # Acciones de cambio de estado
     # ---------------------------
 
@@ -101,11 +145,21 @@ class OpCertificate(models.Model):
         self.write({"state": "draft"})
 
     def action_issue(self):
-        """Emitir el certificado."""
-        self.write({
-            "state": "issued",
-            "issue_date": fields.Date.today(),
-        })
+        """Emitir el certificado y generar hash de verificación."""
+        for rec in self:
+            # Generar hash solo si no existe
+            if not rec.verification_hash:
+                hash_value = rec._generate_verification_hash()
+                rec.write({
+                    "state": "issued",
+                    "issue_date": fields.Date.today(),
+                    "verification_hash": hash_value,
+                })
+            else:
+                rec.write({
+                    "state": "issued",
+                    "issue_date": fields.Date.today(),
+                })
 
     def action_revoke(self):
         """Revocar el certificado."""

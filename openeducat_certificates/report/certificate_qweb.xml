@@ -35,6 +35,12 @@
                 &#160;Duración: <span t-esc="doc.duration"/> horas.
               </t>
             </div>
+
+            <!-- Código QR de verificación (esquina inferior derecha) -->
+            <div class="qr-corner" t-if="doc.qr_code_url">
+              <img t-att-src="doc.qr_code_url" alt="QR" class="qr-img"/>
+              <div class="qr-label">Verificar autenticidad</div>
+            </div>
           </div>
         </div>
 
@@ -53,6 +59,15 @@
           .sub{ font-size:20px; color:#1a5899; margin:0 0 30px 0; letter-spacing:3px; }
           .nombre{ font-size:34px; font-weight:700; margin:30px 0 10px 0; }
           .dni, .detalle{ font-size:14px; margin:8px 0; }
+          .qr-corner{
+            position:absolute; bottom:20px; right:20px; text-align:center; z-index:2;
+          }
+          .qr-img{
+            width:120px; height:120px; display:block; margin:0 auto 5px;
+          }
+          .qr-label{
+            font-size:9px; color:#666; margin:0;
+          }
         </style>
 
         <p style="page-break-after: always;"></p>

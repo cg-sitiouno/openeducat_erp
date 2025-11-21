@@ -57,6 +57,32 @@
           .ov-desc  { top: 62%; font-size: clamp(12px, 1.7vw, 18px); color:#0b3042 }
 
           .cert-actions { margin: 16px 0 32px; }
+          /* Estilos para QR de verificación */
+          .qr-verification {
+            display: inline-block;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          }
+          .qr-image {
+            width: 200px;
+            height: 200px;
+            display: block;
+            margin: 0 auto;
+          }
+          .qr-text {
+            margin: 10px 0 5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+          }
+          .hash-text {
+            margin: 0;
+            font-size: 11px;
+            color: #666;
+            font-family: monospace;
+          }
           @media print {
             header, footer, .o_main_navbar, .cert-actions { display:none !important; }
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -99,6 +125,15 @@
             </a>
           </div>
           -->
+
+          <!-- Código QR de verificación -->
+          <div class="mt-4 text-center" t-if="cert.qr_code_url">
+            <div class="qr-verification">
+              <img t-att-src="cert.qr_code_url" alt="Código QR de verificación" class="qr-image"/>
+              <p class="qr-text">Escanea para verificar autenticidad</p>
+              <p class="hash-text">Hash: <span t-esc="cert.verification_hash[:16]"/>...</p>
+            </div>
+          </div>
         </div>
       </t>
     </template>

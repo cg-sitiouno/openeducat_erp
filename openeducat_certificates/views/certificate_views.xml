@@ -55,6 +55,17 @@
                      required="1" readonly="state != 'draft'"/>
             </group>
 
+            <!-- Firma Digital (solo visible cuando está emitido) -->
+            <group string="Firma Digital" invisible="state != 'issued'">
+              <group>
+                <field name="verification_hash" readonly="1"/>
+              </group>
+              <group>
+                <field name="qr_code_url" widget="url" readonly="1" string="URL del código QR"/>
+              </group>
+            </group>
+
+
             <!-- Ocultos pero útiles -->
             <group invisible="1">
               <field name="admission_id"/>
