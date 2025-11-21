@@ -51,10 +51,10 @@
             line-height: 1.35;
           }
           /* Aproxima las posiciones (porcentaje vertical) a tu diseño */
-          .ov-name  { top: 45%; font-style: italic; font-weight: 700;
-                      font-size: clamp(36px, 4.8vw, 52px); color:#0b3042}
-          .ov-id    { top: 55%; font-size: clamp(32px, 1.6vw, 16px); color:#0b3042 }
-          .ov-desc  { top: 62%; font-size: clamp(12px, 1.7vw, 18px); color:#0b3042 }
+          .ov-name  { top: 44%; font-style: italic; font-weight: 700;
+                      font-size: clamp(18px, 5vw, 62px); color:#0b3042}
+          .ov-id    { top: 54%; font-size: clamp(10px, 2.5vw, 21px); color:#0b3042 }
+          .ov-desc  { top: 61%; line-height: 1.3; font-size: clamp(9px, 2.2vw, 20px); color:#0b3042 }
 
           .cert-actions { margin: 16px 0 32px; }
           /* Estilos para QR de verificación */
