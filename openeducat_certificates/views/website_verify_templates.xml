@@ -134,6 +134,18 @@
               <p class="hash-text">Hash: <span t-esc="cert.verification_hash[:16]"/>...</p>
             </div>
           </div>
+
+          <!-- Botón de descarga de PDF -->
+          <div class="mt-4 text-center">
+            <a t-attf-href="/report/html/openeducat_certificates.report_certificate_document/{{cert.id}}?print=1" 
+               class="btn btn-primary btn-lg" 
+               target="_blank">
+              <i class="fa fa-download"></i> Descargar Certificado PDF
+            </a>
+            <p class="text-muted mt-2" style="font-size: 12px;">
+              Se abrirá en una nueva ventana. Use Ctrl+P para guardar como PDF
+            </p>
+          </div>
         </div>
       </t>
     </template>
