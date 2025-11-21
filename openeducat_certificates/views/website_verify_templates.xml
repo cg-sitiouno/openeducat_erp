@@ -137,7 +137,7 @@
 
           <!-- Botón de descarga de PDF -->
           <div class="mt-4 text-center">
-            <a t-attf-href="/report/html/openeducat_certificates.report_certificate_document/{{cert.id}}?print=1" 
+            <a t-attf-href="/certificates/print/{{cert.verification_hash}}?print=1" 
                class="btn btn-primary btn-lg" 
                target="_blank">
               <i class="fa fa-download"></i> Descargar Certificado PDF

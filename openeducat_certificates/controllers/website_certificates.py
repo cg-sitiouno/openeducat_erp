@@ -132,11 +132,38 @@ class WebsiteCertificates(http.Controller):
         headers = [("Content-Type", mime)]
         return request.make_response(image_data, headers=headers)
 
+
     # -------------------------------------------
-    # (OPCIONAL) RUTA DE IMPRESIÓN / PDF
-    # La dejamos comentada por ahora, para no usar PDFs.
+    # RUTA PÚBLICA PARA IMPRIMIR CERTIFICADO
     # -------------------------------------------
-    # @http.route(['/certificates/print/<path:anything>'], type='http', auth='public', website=True)
-    # def print_certificate(self, anything, **kwargs):
-    #     # Aquí iría la lógica de PDF si la vuelves a activar más adelante
-    #     raise NotFound()
+    @http.route(
+        "/certificates/print/<string:hash_value>",
+        type="http",
+        auth="public",
+        website=True,
+    )
+    def print_certificate(self, hash_value, **kwargs):
+        """
+        Renderiza el reporte HTML del certificado de forma pública.
+        Permite descargar/imprimir el certificado sin necesidad de login.
+        """
+        cert = (
+            request.env["op.certificate"]
+            .sudo()
+            .search(
+                [
+                    ("verification_hash", "=", hash_value),
+                    ("state", "=", "issued"),
+                ],
+                limit=1,
+            )
+        )
+        
+        if not cert:
+            raise NotFound()
+        
+        # Renderizar el reporte HTML
+        return request.render(
+            "openeducat_certificates.report_certificate_document",
+            {"docs": cert}
+        )
