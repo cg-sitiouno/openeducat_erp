@@ -132,9 +132,32 @@
           // Auto-abrir diálogo de impresión si viene el parámetro print=1
           if (window.location.search.includes('print=1')) {
             window.onload = function() {
-              setTimeout(function() {
-                window.print();
-              }, 500);
+              // Esperar a que la imagen de fondo se cargue completamente
+              var bgImage = document.querySelector('.cert-bg');
+              if (bgImage) {
+                if (bgImage.complete) {
+                  // La imagen ya está cargada
+                  setTimeout(function() {
+                    window.print();
+                  }, 500);
+                } else {
+                  // Esperar a que la imagen termine de cargar
+                  bgImage.onload = function() {
+                    setTimeout(function() {
+                      window.print();
+                    }, 500);
+                  };
+                  // Timeout de seguridad: imprimir después de 5 segundos aunque no cargue
+                  setTimeout(function() {
+                    window.print();
+                  }, 5000);
+                }
+              } else {
+                // No hay imagen, imprimir directamente
+                setTimeout(function() {
+                  window.print();
+                }, 500);
+              }
             };
           }
         </script>
