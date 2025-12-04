@@ -152,13 +152,11 @@ class OpCertificate(models.Model):
                 hash_value = rec._generate_verification_hash()
                 rec.write({
                     "state": "issued",
-                    "issue_date": fields.Date.today(),
                     "verification_hash": hash_value,
                 })
             else:
                 rec.write({
                     "state": "issued",
-                    "issue_date": fields.Date.today(),
                 })
 
     def action_revoke(self):
