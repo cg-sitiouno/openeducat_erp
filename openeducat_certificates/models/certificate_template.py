@@ -1,5 +1,6 @@
 # models/certificate_template.py
-from odoo import models, fields
+from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class OpCertificateTemplate(models.Model):
     _name = "op.certificate.template"
@@ -19,3 +20,18 @@ class OpCertificateTemplate(models.Model):
             "url": f"/web/image/op.certificate.template/{self.id}/bg_image",
             "target": "new",
         }
+
+    def unlink(self):
+        """Sobrescribir unlink para validar que no haya certificados usando esta plantilla."""
+        for template in self:
+            # Buscar certificados que usen esta plantilla
+            certificates = self.env['op.certificate'].search([
+                ('template_id', '=', template.id)
+            ])
+            if certificates:
+                raise UserError(
+                    f"No se puede eliminar la plantilla '{template.name}' porque está siendo "
+                    f"usada por {len(certificates)} certificado(s). "
+                    f"Primero debe eliminar o reasignar los certificados asociados."
+                )
+        return super(OpCertificateTemplate, self).unlink()

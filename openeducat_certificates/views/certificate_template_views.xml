@@ -7,7 +7,7 @@
       <field name="name">op.certificate.template.list</field>
       <field name="model">op.certificate.template</field>
       <field name="arch" type="xml">
-        <list string="Plantillas de Certificados">
+        <list string="Plantillas de Certificados" delete="true">
           <field name="name"/>
           <field name="course_id"/>
           <field name="hours"/>
@@ -20,7 +20,12 @@
       <field name="name">op.certificate.template.form</field>
       <field name="model">op.certificate.template</field>
       <field name="arch" type="xml">
-        <form string="Plantilla de Certificado">
+      <form string="Plantilla de Certificado" delete="true">
+          <header>
+            <button name="unlink" type="object" 
+                    string="Eliminar" class="btn-danger"
+                    confirm="¿Está seguro de que desea eliminar esta plantilla?"/>
+          </header>
           <sheet>
             <group>
               <group>
